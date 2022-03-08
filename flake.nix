@@ -56,6 +56,15 @@
           };
 
           devShells.dev = pkgs.mkShell {
+            packages = with pkgs; [
+              clang
+              clang-tools
+              cppcheck
+              # ccls
+
+              rnix-lsp
+            ];
+
             buildInputs = with pkgs; [
               gnumake
             ] ++ nativeBuildInputs ++ buildInputs;
