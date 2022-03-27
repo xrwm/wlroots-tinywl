@@ -60,9 +60,10 @@
               clang
               clang-tools
               cppcheck
-              # ccls
 
               rnix-lsp
+
+              kwin
             ];
 
             buildInputs = with pkgs; [
@@ -72,7 +73,7 @@
             shellHook = ''
               [ $STARSHIP_SHELL ] && exec $STARSHIP_SHELL
             '';
-            # LD_LIBRARY_PATH = pkgs.lib.strings.makeLibraryPath dynamicLibraries;
+
             CURRENT_PROJECT = packageName;
           };
 

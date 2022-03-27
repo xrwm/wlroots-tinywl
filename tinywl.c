@@ -533,6 +533,9 @@ static void server_new_output(struct wl_listener *listener, void *data) {
   struct tinywl_server *server = wl_container_of(listener, server, new_output);
   struct wlr_output *wlr_output = data;
 
+  wlr_output->width = 1920;
+  wlr_output->height = 1080;
+
   /* Configures the output created by the backend to use our allocator
    * and our renderer. Must be done once, before commiting the output */
   wlr_output_init_render(wlr_output, server->allocator, server->renderer);
@@ -542,14 +545,20 @@ static void server_new_output(struct wl_listener *listener, void *data) {
    * refresh rate), and each monitor supports only a specific set of modes. We
    * just pick the monitor's preferred mode, a more sophisticated compositor
    * would let the user configure it. */
+  wlr_log(WLR_INFO, "%d output modes", wl_list_length(&wlr_output->modes));
   if (!wl_list_empty(&wlr_output->modes)) {
     struct wlr_output_mode *mode = wlr_output_preferred_mode(wlr_output);
+    wlr_log(WLR_INFO, "mode: %ux%u:%umHZ, %s", mode->width, mode->height,
+            mode->refresh, mode->preferred ? "preferred" : "not preferred");
     wlr_output_set_mode(wlr_output, mode);
     wlr_output_enable(wlr_output, true);
     if (!wlr_output_commit(wlr_output)) {
       return;
     }
   }
+
+  wlr_log(WLR_INFO, "Output is %ux%u:%umHZ", wlr_output->width,
+          wlr_output->height, wlr_output->refresh);
 
   /* Allocates and configures our state for this output */
   struct tinywl_output *output = calloc(1, sizeof(struct tinywl_output));
